@@ -20,7 +20,7 @@ if [ "$1" = "-w" ] && [ "$2" -gt "0" ] && [ "$3" = "-c" ] && [ "$4" -gt "0" ] &&
 	tx_unit=$(echo "$vn_value"|grep tx|awk {'print $3'}|cut -d. -f1)
 
 	# Exit if its using byte
-	echo $vn_valu|grep 'iB'&&echo "##### Please configure /etc/vnstat.conf to display in bit #####"&&exit 3
+	echo $vn_value|grep 'iB'&&echo "##### Please configure /etc/vnstat.conf to display in bit #####"&&exit 3
 
 	#recalculate rx_value and tx_value, depending on the unit in rx_unit and tx_unit
 	#first for rx
