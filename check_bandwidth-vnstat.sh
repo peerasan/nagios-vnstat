@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check Bandwidth, with vnstat (by Nestor@Toronto)
 # Credit by Nestor@Toronto (https://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/Check-Bandwidth,-with-vnstat-(by-Nestor@Toronto)/details)
@@ -13,7 +13,7 @@ if [ "$1" = "-w" ] && [ "$2" -gt "0" ] && [ "$3" = "-c" ] && [ "$4" -gt "0" ] &&
 	warn=$2
 	crit=$4
 	NIC=$5 
-	vn_value=$(vnstat -tr 2 -i $NIC) || exit 3 # We collect bandwidth for 2 second
+	vn_value=$(vnstat -ru 1 -tr 2 -i $NIC) || exit 3 # We collect bandwidth for 2 second
 	rx_value=$(echo "$vn_value"|grep rx|awk {'print $2'}|cut -d. -f1) 
 	rx_unit=$(echo "$vn_value"|grep rx|awk {'print $3'}|cut -d. -f1)
 	tx_value=$(echo "$vn_value"|grep tx|awk {'print $2'}|cut -d. -f1) 
@@ -30,8 +30,8 @@ if [ "$1" = "-w" ] && [ "$2" -gt "0" ] && [ "$3" = "-c" ] && [ "$4" -gt "0" ] &&
 	fi	
 	#...then also for tx
 	if [ $tx_unit == "Mbit/s" ]
-	then tx_value_recal=$((tx_value*1024/8)) 
-	else tx_value_recal=$((tx_value/8)) 
+		then tx_value_recal=$((tx_value*1024/8)) 
+		else tx_value_recal=$((tx_value/8)) 
 	fi
 	
 	status="$rx_value_recal $tx_value_recal"
@@ -49,13 +49,14 @@ else
 	exit 0
 fi
 else
-        echo "check_bandwidth.sh - Nagios Plugin for checking host bandwidth "
-        echo ""
-        echo "Usage:	check_bandwidth.sh -w <warnlevel> -c <critlevel> <NIC>"
-        echo "	= warnlevel and critlevel is bandwidth in KBps"
-        echo "
-        echo "EXAMPLE:  /usr/lib64/nagios/plugins/check_bandwidth.sh -w 900 -c 950 eth1 
+	echo "check_bandwidth.sh - Nagios Plugin for checking host bandwidth "
+	echo ""
+	echo "Usage:	check_bandwidth.sh -w <warnlevel> -c <critlevel> <NIC>"
+	echo "	= warnlevel and critlevel is bandwidth in KBps"
+	echo "EXAMPLE:  /usr/lib64/nagios/plugins/check_bandwidth.sh -w 900 -c 950 eth1"
 	echo "	= Send warning when more than 900 KBps, critical when more than 950 KBps"
-        echo ""
-        exit
+	echo "EXAMPLE:  /usr/lib64/nagios/plugins/check_bandwidth.sh -w 50000 -c 80000 eth1"
+	echo "	= Send warning when more than 500 Mbps, critical when more than 800 Mbps"
+	echo ""
+	exit
 fi
